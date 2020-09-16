@@ -1,0 +1,56 @@
+{
+  "name": "guestbook-api",
+  "description": "guestbook api for guestbook webapp",
+  "version": "1.0.0",
+  "author": {
+    "name": "Ahmed Saber",
+    "email": "ahmedsaberwd@gmail.com"
+  },
+  "engines": {
+    "node": ">=10.x"
+  },
+  "scripts": {
+    "start": "cross-env NODE_ENV=development nodemon server.js",
+    "test": "cross-env NODE_ENV=test babel-tape-runner test/test-*.js",
+    "pretest": "eslint .",
+    "prod": "pm2-runtime start ecosystem.config.js --env production",
+    "production": "NODE_ENV=production pm2 start server.js -i max"
+  },
+  "dependencies": {
+    "@hapi/joi": "^15.1.1",
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "~1.19.0",
+    "cors": "^2.8.5",
+    "cross-env": "~5.2.0",
+    "dotenv": "~8.0.0",
+    "express": "~4.17.0",
+    "helmet": "^3.21.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "mongoose": "~5.5.11",
+    "morgan": "~1.9.1",
+    "pm2": "^4.4.0",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.0.7",
+    "validator": "^11.1.0",
+    "winston": "~3.2.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "~10.0.1",
+    "babel-tape-runner": "~3.0.0",
+    "eslint": "~5.16.0",
+    "eslint-config-prettier": "~4.3.0",
+    "eslint-plugin-prettier": "~3.1.0",
+    "nodemon": "1.19.0",
+    "npm-check-updates": "~3.1.9",
+    "prettier": "~1.17.1",
+    "supertest": "*",
+    "tape": "~4.10.1"
+  },
+  "keywords": [
+    "node",
+    "mongoose",
+    "express"
+  ]
+}
