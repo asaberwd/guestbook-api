@@ -21,7 +21,6 @@ exports.createMessage = async function (req, res) {
   }
 
     const user = idFromToken(req)
-console.log('ddd', user, req.body.text)
     let messageData = {
         user,
         text:req.body.text
@@ -50,5 +49,42 @@ console.log('ddd', user, req.body.text)
             }
         });
     };
+
+}
+
+exports.createReply = async function (req, res) {
+const { reply, messageId } = req.body
+    if(reply && messageId){
+
+       try  {
+           let message = await Message.findOneAndUpdate({_id:messageId}, { $push: {replies:reply}  },
+            {  rawResult: true    })
+           if(message.lastErrorObject.updatedExisting){
+            return res.status(200).json({
+                default_response: {
+                    success: true,
+                    errors: [ ],
+                    message: message.created
+                    }
+                });
+           } else {
+            return res.status(400).json({
+                default_response: {
+                success: false,
+                errors: [  "message does not exist"  ],
+                message: message.validation
+                }});
+           }
+
+       }catch(err){
+        return res.status(400).json({ 
+            default_response: {
+                success: false,
+                errors: [ String(err) ],
+                message: message.server
+            }
+            });
+       }
+    }
 
 }

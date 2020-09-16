@@ -5,7 +5,7 @@ const { ensureAuthenticated } = require("./../middleware/auth");
 
 
 const {
-  createMessage
+  createMessage, createReply
   } = require("./../app/controllers/messageControllers");
 
 
@@ -14,6 +14,13 @@ const {
 router
   .route("/")
   .post( ensureAuthenticated, createMessage )
+
+
+// type   Post
+// desc   create reply
+router
+  .route("/reply")
+  .post( ensureAuthenticated, createReply )
 
 
 
