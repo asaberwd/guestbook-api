@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * Module dependencies.
@@ -8,7 +7,11 @@
  * Expose
  */
 
+const routes = require('./../routes')
+
+
 module.exports = function(app) {
+  app.use(routes)
 
   /**
    * Error handling
