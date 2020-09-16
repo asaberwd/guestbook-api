@@ -21,3 +21,18 @@ exports.validateUser = body => {
 
   return result.error;
 };
+
+exports.validateMessage = body => {
+  const { text } = body;
+  // validate message attr
+  const schema = Joi.object().keys({
+    text: Joi.string()
+      .min(3)
+      .max(250)
+      .required(),
+  });
+
+  const result = Joi.validate({ text }, schema);
+
+  return result.error;
+};

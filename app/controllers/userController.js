@@ -1,6 +1,5 @@
 const _ = require("lodash");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
 const User = require("./../models/user");
 
@@ -106,7 +105,8 @@ exports.login = async function(req, res) {
            });
         }
         // Check password
-        bcrypt.compare(password, user.password).then( isMatch => {
+        bcrypt.compare(password, user.password)
+        .then( async isMatch => {
           if (isMatch) {
             // Create JWT Payload
             const payload = {
@@ -115,27 +115,27 @@ exports.login = async function(req, res) {
               email: user.email
             };
 
-            let tokenObj = generatetoken(payload)
-            .then(()=>{
-              // response succesfully
-              return res.status(200).json({
-                default_response: {
-                  success: true,
-                  errors: [],
-                  message: message.retrieved
-                },
-                user:{_id:user._id, name:user.name, email:user.email, phone:user.phone, isProfileCompleted: user.isProfileCompleted },
-                token: tokenObj.token
-              });
-            }).catch((err)=>{
-              return res.status(500).json({ 
-                default_response: {
-                  success: false,
-                  errors: [ "problem saving token" ],
-                  message: message.validation
-                }
-               });
-            })
+            let tokenObj = await generatetoken(payload)
+              if(tokenObj.success){
+                return res.status(200).json({
+                  default_response: {
+                    success: true,
+                    errors: [],
+                    message: message.retrieved
+                  },
+                  user:{_id:user._id, name:user.name, email:user.email, phone:user.phone, isProfileCompleted: user.isProfileCompleted },
+                  token: tokenObj.token
+                });
+              }else {
+                return res.status(500).json({ 
+                  default_response: {
+                    success: false,
+                    errors: [ "problem saving token" ],
+                    message: message.validation
+                  }
+                });
+              }
+
           } else {
             return res.status(401).json({ 
               default_response: {
