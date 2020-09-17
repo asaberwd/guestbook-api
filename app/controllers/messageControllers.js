@@ -57,7 +57,9 @@ const { reply, messageId } = req.body
     if(reply && messageId){
 
        try  {
-           let message = await Message.findOneAndUpdate({_id:messageId}, { $push: {replies:reply}  },
+        const user = idFromToken(req)
+
+           let message = await Message.findOneAndUpdate({_id:messageId}, { $push: {replies:{reply, user } }  },
             {  rawResult: true    })
            if(message.lastErrorObject.updatedExisting){
             return res.status(200).json({
@@ -87,4 +89,38 @@ const { reply, messageId } = req.body
        }
     }
 
+}
+
+// view all messages
+exports.viewMessages = async function(req, res) {
+    let query = {isActive:true}
+    let opt
+    let page = parseInt(req.query.page)
+    let count = parseInt(req.query.count)
+
+    if (page && count) opt = { skip: count*(page -1) , limit: count }
+    
+    Message.find(query, null, opt)
+    .sort({ createdAt:-1 })
+      .then(el => {
+        return res.status(200).json({ 
+            default_response: {
+                success: true,
+                errors: [ ],
+                message: message.retrieved
+                },
+                messages:el
+            });    
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(200).json({ 
+            default_response: {
+                success: false,
+                errors: [ String(err) ],
+                message: message.server
+                }
+            });      
+        });
+  
 }

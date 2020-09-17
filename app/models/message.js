@@ -15,24 +15,26 @@ const MessageSchema = new Schema({
     type: String,
     required: true
   },
-  replies:[{
+  replies:[{ 
+    reply :{
     type: String
+    },
+        // common fields
+        isActive: {
+          type: Boolean,
+          default: true
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now
+        },
+        updatedAt: {
+          type: Date
+        },
+        deletedAt: {
+          type: Date
+        },
   }],
-    // common fields
-    isActive: {
-      type: Boolean,
-      default: true
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now
-    },
-    updatedAt: {
-      type: Date
-    },
-    deletedAt: {
-      type: Date
-    },
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",

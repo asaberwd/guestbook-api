@@ -5,7 +5,7 @@ const { ensureAuthenticated } = require("./../middleware/auth");
 
 
 const {
-  createMessage, createReply
+  createMessage, createReply, viewMessages
   } = require("./../app/controllers/messageControllers");
 
 
@@ -14,6 +14,8 @@ const {
 router
   .route("/")
   .post( ensureAuthenticated, createMessage )
+
+  .get(ensureAuthenticated, viewMessages)
 
 
 // type   Post
