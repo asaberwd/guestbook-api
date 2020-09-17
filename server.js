@@ -21,7 +21,7 @@ const config = require("./config");
 // const { generateLeadtoken } = require("./helper/generateToken");
 
 const models = join(__dirname, "app/models");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 const app = express();
 const connection = connect();
