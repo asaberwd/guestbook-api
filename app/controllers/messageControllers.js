@@ -127,6 +127,7 @@ exports.viewMessages = async function(req, res) {
 }
 
 
+// delete message by id
 exports.deleteMessage = async (req, res) => {
     // check if id is valid or not
     const id = req.params.id;
@@ -145,7 +146,7 @@ exports.deleteMessage = async (req, res) => {
     try {
         // delete message
         const user = idFromToken(req)
-        let deleted = await Message.findOneAndUpdate({_id:id, user }, {
+        let deleted = await Message.findOneAndUpdate({_id:id, user, isActive:true }, {
         isActive: false,
         deletedAt: Date.now()
         }, {  rawResult: true , new: true     });
@@ -177,4 +178,58 @@ exports.deleteMessage = async (req, res) => {
     }
     
     
-    };
+};
+
+
+// update message by id
+exports.updateMessage = async (req, res) => {
+    let id = req.params.id;
+  
+    let idError = !validateId(id);
+    if (idError) {
+      // when id is not valid send error
+      return res.status(200).json({ 
+        default_response: {
+            success: false,
+            errors: [ "unvalid message id" ],
+            message: message.validation
+            }
+        });
+    }
+
+    try {
+        // update message
+        const user = idFromToken(req)
+        let updated = await Message.findOneAndUpdate({_id:id, user, isActive:true }, {
+        text:req.body.text,
+        updatedAt: Date.now()
+        }, {  rawResult: true , new: true     });
+      if(!updated.lastErrorObject.updatedExisting){ 
+          return res.status(400).json({ 
+              default_response: {
+                  success: false,
+                  errors: [ "you can not update others messages or non existed messages" ],
+                  message: message.validation
+              }
+          }); 
+      }
+    
+      return res.status(200).json({ 
+        default_response: {
+            success: true,
+            errors: [ ],
+            message: message.updated
+            }
+        });
+    } catch (err){
+        return res.status(400).json({ 
+            default_response: {
+                success: false,
+                errors: [ String(err) ],
+                message: message.server
+            }
+            });
+    }
+  
+    
+  };

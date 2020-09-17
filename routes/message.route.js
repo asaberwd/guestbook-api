@@ -5,7 +5,7 @@ const { ensureAuthenticated } = require("./../middleware/auth");
 
 
 const {
-  createMessage, createReply, viewMessages, deleteMessage
+  createMessage, createReply, viewMessages, deleteMessage, updateMessage
   } = require("./../app/controllers/messageControllers");
 
 
@@ -31,6 +31,9 @@ router
 router
   .route("/:id")
   .delete( ensureAuthenticated, deleteMessage )
+
+  .put( ensureAuthenticated, updateMessage )
+
 
 
 
