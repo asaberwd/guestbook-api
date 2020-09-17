@@ -4,6 +4,7 @@ const Message = require("./../models/message");
 const { validateMessage } = require("./../../helper/validate");
 const { idFromToken } = require("../../helper/idFromToken")
 const message = require("./../../constants/responseMessages")
+const { validateId } = require("./../../helper/validateId");
 
 
 exports.createMessage = async function (req, res) {
@@ -124,3 +125,56 @@ exports.viewMessages = async function(req, res) {
         });
   
 }
+
+
+exports.deleteMessage = async (req, res) => {
+    // check if id is valid or not
+    const id = req.params.id;
+    let error = !validateId(id);
+    if (error) {
+      // when id is not valid send error
+      return res.status(200).json({ 
+          default_response: {
+              success: false,
+              errors: [ "unvalid id" ],
+              message: message.validation
+              }
+          }); 
+    }
+
+    try {
+        // delete message
+        const user = idFromToken(req)
+        let deleted = await Message.findOneAndUpdate({_id:id, user }, {
+        isActive: false,
+        deletedAt: Date.now()
+        }, {  rawResult: true , new: true     });
+      if(!deleted.lastErrorObject.updatedExisting){ 
+          return res.status(400).json({ 
+              default_response: {
+                  success: false,
+                  errors: [ "you can not delete others or deleted messages" ],
+                  message: message.validation
+              }
+          }); 
+      }
+    
+      return res.status(200).json({ 
+        default_response: {
+            success: true,
+            errors: [ ],
+            message: message.deleted
+            }
+        });
+    } catch (err){
+        return res.status(400).json({ 
+            default_response: {
+                success: false,
+                errors: [ String(err) ],
+                message: message.server
+            }
+            });
+    }
+    
+    
+    };
